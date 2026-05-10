@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="README.zh-cn.md">🇨🇳 中文</a> &nbsp;|&nbsp; <strong>🇬🇧 English</strong>
+  <a href="README.zh-CN.md">简体中文</a> | <strong>English</strong>
 </p>
 
 ---
@@ -52,28 +52,16 @@ A GUI calculator built with **C++17** and **Qt6** that supports **arbitrary-prec
 ### Build Steps
 
 ```bash
-# 1. Enter the project directory
 cd ArbitraryRationalCalculator
-
-# 2. Create and enter the build directory
 mkdir build && cd build
-
-# 3. Configure CMake
 cmake ..
-
-# 4. Build
 cmake --build .
-
-# 5. Run
 ./ArbitraryRationalCalculator
 ```
 
 > **Windows Users**: Make sure Qt6 is in your system `PATH`, or use Visual Studio's CMake integration.
-
-> **macOS Users**: If Qt6 is installed via Homebrew, use:
-> ```bash
-> cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix qt6)
-> ```
+>
+> **macOS Users**: If Qt6 is installed via Homebrew, use `cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix qt6)`.
 
 ---
 
@@ -86,11 +74,7 @@ cmake --build .
 | **Fraction** | `1/2` | Numerator/Denominator, auto-reduced |
 | **Scientific** | `1.23e-5` | Supports positive and negative exponents |
 
-### Notes
-
-- Denominator must not be zero
-- Divisor (second operand) must not be zero for division
-- Whitespace in input is automatically ignored
+**Notes**: Denominator must not be zero; divisor must not be zero for division; whitespace is automatically ignored.
 
 ---
 
@@ -100,8 +84,7 @@ cmake --build .
 
 The `BigInt` class uses a **little-endian linked list** to store each digit (0–9). Each `DigitNode` holds one digit and a pointer to the next higher digit.
 
-- **Storage**: Linked list (little-endian)
-- **Base unit**: `BASE = 1e9` (stores 9 decimal digits per base unit in `to_vec()` optimization)
+- **Base unit**: `BASE = 1e9` (stores 9 decimal digits per element in `to_vec()`)
 - **Core algorithms**:
   - Addition / Subtraction: column addition/subtraction on vector representation
   - Multiplication: double loop column multiplication
@@ -111,19 +94,11 @@ The `BigInt` class uses a **little-endian linked list** to store each digit (0�
 
 ### Rational
 
-The `Rational` class builds upon `BigInt` to represent rational numbers exactly as numerator/denominator fractions:
-
-- Automatically calls `normalize()` on construction for reduction
-- Arithmetic: common denominator for addition/subtraction, cross-multiplication for multiplication/division
-- Results automatically reduced to simplest form
-- Supports decimal conversion via `toDecimalString(int precision)`
+The `Rational` class builds upon `BigInt` to represent rational numbers exactly as numerator/denominator fractions. Automatically reduced on construction, results always simplified, supports decimal conversion via `toDecimalString(int precision)`.
 
 ### GUI (Qt Widgets)
 
-- **Input area**: Two `QLineEdit` widgets for operands
-- **Operator selection**: `QComboBox` for +, -, ×, ÷
-- **Result display**: Shows both fraction and decimal representations
-- **Styling**: Custom stylesheet with blue-bordered group boxes, green calculate button / red clear button
+Two `QLineEdit` widgets for operands, `QComboBox` for operator selection, results displayed as both fraction and decimal, custom stylesheet.
 
 ---
 

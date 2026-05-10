@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>🇨🇳 中文</strong> &nbsp;|&nbsp; <a href="README.md">🇬🇧 English</a>
+  <strong>简体中文</strong> | <a href="README.md">English</a>
 </p>
 
 ---
@@ -32,11 +32,11 @@
 ├── main.cpp                # 程序入口
 ├── CalculatorWidget.h      # 计算器 UI 头文件
 ├── CalculatorWidget.cpp    # 计算器 UI 实现
-├── Storage.h               # 链表节点 + 基础大数类（BigInteger/BigRational，用于参考）
+├── Storage.h               # 链表节点 + 基础大数类（用于参考）
 ├── BigInt.h                # 任意精度整数类（头文件实现）
 ├── Rational.h              # 有理数类（头文件实现）
 ├── CMakeLists.txt          # CMake 构建配置
-└── PLAN.md                 # 开发计划文档
+└── PLAN.md                 # 开发计划
 ```
 
 ---
@@ -52,47 +52,29 @@
 ### 构建步骤
 
 ```bash
-# 1. 进入项目目录
 cd ArbitraryRationalCalculator
-
-# 2. 创建构建目录并进入
 mkdir build && cd build
-
-# 3. 配置 CMake
 cmake ..
-
-# 4. 编译
 cmake --build .
-
-# 5. 运行
 ./ArbitraryRationalCalculator
 ```
 
-> **Windows 用户**：请确保 Qt6 的安装路径已添加到系统环境变量 `PATH` 中，或使用 Visual Studio 的 CMake 集成进行构建。
-
-> **macOS 用户**：若通过 Homebrew 安装 Qt6，可使用：
-> ```bash
-> cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix qt6)
-> ```
+> **Windows 用户**：确保 Qt6 的安装路径已添加到系统环境变量 `PATH` 中，或使用 Visual Studio 的 CMake 集成进行构建。
+>
+> **macOS 用户**：若通过 Homebrew 安装 Qt6，可使用 `cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix qt6)`。
 
 ---
 
-## ⌨️ 输入格式说明
-
-本计算器支持以下输入格式，输入的数值大小不受传统整数类型限制：
+## ⌨️ 输入格式
 
 | 格式 | 示例 | 说明 |
 |------|------|------|
 | **整数** | `12345678901234567890` | 任意长度整数 |
 | **小数** | `3.14159265358979323846` | 任意精度小数，自动转为分数 |
-| **分数** | `1/2` | 分子/分母形式，自动约分 |
+| **分数** | `1/2` | 分子/分母，自动约分 |
 | **科学计数法** | `1.23e-5` | 支持正负指数 |
 
-### 注意事项
-
-- 分母不能为零
-- 除法运算中除数（第二个数）不能为零
-- 输入中的空白字符会被自动忽略
+**注意**：分母不能为零；除法除数不能为零；空白字符会被自动忽略。
 
 ---
 
@@ -100,31 +82,23 @@ cmake --build .
 
 ### BigInt（任意精度整数）
 
-`BigInt` 类使用**小端序链表**存储每一位数字（0–9），每个节点 `DigitNode` 包含一个数字和指向更高位的指针。
+`BigInt` 使用**小端序链表**存储每一位数字（0–9），每个节点 `DigitNode` 包含一个数字和指向更高位的指针。
 
-- **存储结构**：链表（小端序）
-- **基础单位**：`BASE = 1e9`（每位存储 9 位十进制数字，`to_vec()` 层面的优化）
+- **基础单位**：`BASE = 1e9`（`to_vec()` 层面每元素存 9 位十进制数字）
 - **核心算法**：
-  - 加法 / 减法：基于 vector 的竖式计算
+  - 加 / 减：基于 vector 的竖式计算
   - 乘法：双重循环模拟竖式乘法
   - 除法：二分搜索试商法
-  - `normalize()`：自动约分（辗转相除法求 GCD）
+  - `normalize()`：辗转相除法求 GCD 自动约分
 - **运算符重载**：全套比较、算术、复合赋值运算符
 
 ### Rational（有理数）
 
-`Rational` 类在 `BigInt` 基础上，以分子/分母分数形式精确表示有理数：
-
-- 构造时自动调用 `normalize()` 进行约分
-- 四则运算：通分 / 交叉相乘，结果自动化为最简分数
-- 支持将有理数转换为小数（`toDecimalString(int precision)`）
+`Rational` 在 `BigInt` 基础上以分子/分母分数形式精确表示有理数，构造时自动约分，四则运算结果自动化为最简分数，支持小数转换（`toDecimalString(int precision)`）。
 
 ### 图形界面（Qt Widgets）
 
-- **输入区**：两个 `QLineEdit` 分别接收两个操作数
-- **运算符选择**：`QComboBox` 提供加减乘除选择
-- **结果显示**：同时显示分数形式和小数形式（可选精度）
-- **样式美化**：自定义样式表，蓝色边框分组框，绿色计算按钮 / 红色清空按钮
+两个 `QLineEdit` 接收操作数，`QComboBox` 选择运算符，结果显示分数和小数两种形式，自定义样式表美化。
 
 ---
 
